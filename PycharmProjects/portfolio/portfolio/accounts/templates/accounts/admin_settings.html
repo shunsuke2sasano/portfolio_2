@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}管理者設定{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>管理者設定</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">保存</button>
+    </form>
+    <a href="{% url 'dashboard:admin_dashboard' %}" class="btn btn-secondary mt-3">戻る</a>
+</div>
+{% endblock %}

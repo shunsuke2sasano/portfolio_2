@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}一般ユーザー画面{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>一般ユーザー画面</h2>
+    <a href="{% url 'users:settings' %}" class="btn btn-primary">設定画面</a>
+</div>
+{% endblock %}

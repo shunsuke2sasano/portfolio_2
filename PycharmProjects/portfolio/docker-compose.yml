@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: portfolio_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Bullshit03Sasano19  # MySQL root パスワード
+      MYSQL_DATABASE: portfolio_db  # データベース名
+    ports:
+      - "3307:3306"  # MySQL ポートをホストに公開
+    volumes:
+      - db_data:/var/lib/mysql
+
+  web:
+    build:
+      context: .
+    container_name: portfolio_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      -  ./portfolio:/app/portfolio
+    ports:
+      - "8000:8000"  # Django のポートをホストに公開
+    depends_on:
+      - db
+    environment:
+      DJANGO_SETTINGS_MODULE: "portfolio.portfolio.settings"
+
+volumes:
+  db_data: {}
+
