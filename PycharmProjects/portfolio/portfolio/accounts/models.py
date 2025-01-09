@@ -40,3 +40,16 @@ class CustomUser(AbstractUser, TimestampedModel):
 
     def __str__(self):
         return self.email
+
+    def delete(self, using=None, keep_parents=False):
+        """論理削除を実現するためのオーバーライドメソッド"""
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        """論理削除されたデータの復元"""
+        self.is_deleted = False
+        self.save()
+
+    class Meta:
+        ordering = ['-created_at']  # デフォルトの並び順
