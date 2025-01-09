@@ -61,7 +61,7 @@ def admin_settings(request):
 @login_required
 @user_passes_test(admin_check)
 def account_list(request):
-    accounts = User.objects.all()
+    accounts = User.objects.all(is_deleted=False)
     paginator = Paginator(accounts, 5)  # 1ページあたり5件
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -152,7 +152,7 @@ def account_delete_permanently(request, pk):
 def account_restore(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
-        user.is_active = True  # アクティブ化
+        user.is_deleted = False  # 復元
         user.save()
         messages.success(request, "アカウントを復元しました。")
         return redirect('accounts:account_delete_list')
