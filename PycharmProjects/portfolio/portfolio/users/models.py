@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.db import models
+from portfolio.models import TimestampedModel
 
-class UserProfile(models.Model):
+class UserProfile(TimestampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # 修正箇所
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     name = models.CharField(max_length=25)
@@ -11,5 +12,5 @@ class UserProfile(models.Model):
     bio = models.TextField(max_length=1500, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 

@@ -23,7 +23,7 @@ def inquiry_detail(request, id):
 
 # カテゴリ一覧
 def category_list(request):
-    categories = Category.objects.all()
+    categories = Category.objects.filter(is_deleted=False)
     return render(request, 'inquiry/category_list.html', {'categories': categories})
 
 # カテゴリ追加
@@ -57,10 +57,11 @@ def category_edit(request, id):
 
 # カテゴリ削除
 def category_delete(request, id):
-    category = get_object_or_404(Category, id=id)
+    category = get_object_or_404(Category, id=id, is_deleted=False)
     if request.method == 'POST':
         category.delete()
         messages.success(request, "カテゴリーが削除されました。")
         return redirect('inquiry:category_list')
+    
     return render(request, 'inquiry/category_list.html', {'category': category})
 

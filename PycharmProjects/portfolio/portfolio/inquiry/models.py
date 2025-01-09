@@ -3,7 +3,15 @@ from portfolio.models import TimestampedModel
 
 class Category(TimestampedModel):
     name = models.CharField(max_length=255)
+    is_deleted = models.BooleanField(default=False) 
 
+    def delete(self, *args, **kwargs):
+        """
+        論理削除を実現するためのオーバーライド。
+        """
+        self.is_deleted = True
+        self.save()
+        
     def __str__(self):
         return self.name
     
