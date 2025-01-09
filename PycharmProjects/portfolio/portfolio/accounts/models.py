@@ -32,6 +32,7 @@ class CustomUser(AbstractUser, TimestampedModel):
     is_admin = models.BooleanField(default=False)  # 管理者フラグ
     bio = models.TextField(max_length=1500, blank=True, null=True)  # 自己紹介
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)  # プロフィール画像
+    is_deleted =  models.BooleanField(default=False)  # 論理削除用フラグ
 
     USERNAME_FIELD = "email"  # 認証に使用するフィールド
     REQUIRED_FIELDS = ["name"]  # スーパーユーザー作成時の必須フィールド

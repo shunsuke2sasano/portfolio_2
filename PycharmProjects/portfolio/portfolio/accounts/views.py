@@ -72,36 +72,21 @@ def account_list(request):
 @user_passes_test(admin_check)
 def account_delete(request, pk, permanent=False):
     """
-    アカウント削除ビュー:
-    - ソフトデリート (is_active=False)
-    - 完全削除 (データベースから削除)
-
-    Args:
-        request: HTTPリクエストオブジェクト
-        pk: アカウントのプライマリキー
-        permanent: Trueの場合、完全削除
+    アカウント削除ビュー (論理削除):
+    - 論理削除 (is_deleted=True)
     """
     account = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == 'POST':
-        if permanent:
-            # 完全削除
-            account.delete()
-            messages.success(request, "アカウントを完全に削除しました。")
-            return redirect('accounts:account_delete_list')
+        if not account.is_deleted:
+            account.is_deleted = True
+            account.save()
+            messages.success(request, "アカウントを削除しました。")
         else:
-            # ソフトデリート
-            if account.is_active:
-                account.is_active = False
-                account.save()
-                messages.success(request, "アカウントを削除しました。")
-                return redirect('accounts:account_list')
-            else:
-                messages.error(request, "このアカウントはすでに削除されています。")
-                return redirect('accounts:account_list')
+            messages.error(request, "このアカウントはすでに削除されています。")
+        return redirect('accounts:account_list')
 
-    # GETリクエスト時の確認ページを表示（オプション）
-    return redirect(request, 'accounts/confirm_delete.html', {'account': account, 'permanent': permanent}) 
+    return render(request, 'accounts/confirm_delete.html', {'account': account})
 
 @login_required
 @user_passes_test(admin_check)
@@ -149,8 +134,7 @@ def account_create(request):
 @login_required
 @user_passes_test(admin_check)
 def account_delete_list(request):
-    # ステータスが無効（削除された状態）のアカウントを取得
-    deleted_accounts = User.objects.filter(is_active=False)
+    deleted_accounts = User.objects.filter(is_deleted=True)  # 論理削除されたアカウント
     return render(request, 'accounts/account_delete_list.html', {'accounts': deleted_accounts})
 
 @login_required
