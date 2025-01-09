@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from portfolio.models import TimestampedModel
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, name, email, password=None, **extra_fields):
@@ -24,7 +25,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(name, email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser, TimestampedModel):
     username = None  # usernameフィールドを無効化
     name = models.CharField(max_length=255, unique=True)  # nameを使用
     email = models.EmailField(unique=True)
