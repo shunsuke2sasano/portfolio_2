@@ -1,4 +1,11 @@
-<h1>{{ profile.user.name }}</h1>
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}{ profile.user.name }{% endblock %}
+
+{% block content %}
+
 <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="100">
 <p>性別: {{ profile.get_gender_display }}</p>
 <p>自己紹介: {{ profile.bio }}</p>
@@ -9,3 +16,5 @@
 <script>
     // 同じように非同期でいいね機能を追加
 </script>
+
+{% endblock %}
