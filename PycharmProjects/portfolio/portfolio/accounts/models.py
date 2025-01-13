@@ -1,6 +1,20 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from portfolio.models import TimestampedModel
+from portfolio.portfolio.models import TimestampedModel
+
+class UserProfile(TimestampedModel):
+    # 必要なフィールドを定義
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='profile'
+    )
+    name = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.user.username
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, name, email, password=None, **extra_fields):
@@ -54,3 +68,17 @@ class CustomUser(AbstractUser, TimestampedModel):
 
     class Meta:
         ordering = ['-created_at']  # デフォルトの並び順
+        
+class Like(TimestampedModel):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    liked_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='liked_user'
+    )
+    class Meta:
+        unique_together = ('user', 'liked_user')
+
+class GeneralUserProfile(TimestampedModel):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=[('male', '男性'), ('female', '女性'), ('other', 'その他')])
+    likes_count = models.PositiveIntegerField(default=0)  # ランキング用

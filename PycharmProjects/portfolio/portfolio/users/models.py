@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from portfolio.models import TimestampedModel
+from portfolio.portfolio.models import TimestampedModel
 
 class UserProfile(TimestampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # 修正箇所

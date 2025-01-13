@@ -1,5 +1,5 @@
 from django.db import models
-from portfolio.models import TimestampedModel
+from portfolio.portfolio.models import TimestampedModel
 
 class Category(TimestampedModel):
     name = models.CharField(max_length=255)

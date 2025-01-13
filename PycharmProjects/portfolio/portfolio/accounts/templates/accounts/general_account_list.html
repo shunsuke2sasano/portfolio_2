@@ -1,0 +1,31 @@
+<h1>一般アカウント一覧</h1>
+<ul>
+    {% for profile in profiles %}
+        <li>
+            <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
+            <strong>{{ profile.user.name }}</strong> - {{ profile.get_gender_display }}
+            <button class="like-btn" data-user-id="{{ profile.user.id }}">
+                👍 {{ profile.likes_count }}
+            </button>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+            fetch("{% url 'accounts:like_toggle' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: new URLSearchParams({ 'user_id': userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.textContent = `👍 ${data.likes_count}`;
+                }
+            });
+        });
+    });
+</script>

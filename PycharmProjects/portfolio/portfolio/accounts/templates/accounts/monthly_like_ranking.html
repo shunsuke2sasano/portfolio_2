@@ -1,0 +1,9 @@
+<h1>月のいいねランキング</h1>
+<ol>
+    {% for profile in profiles %}
+        <li>
+            <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
+            <strong>{{ profile.user.name }}</strong> - 👍 {{ profile.total_likes }}
+        </li>
+    {% endfor %}
+</ol>
