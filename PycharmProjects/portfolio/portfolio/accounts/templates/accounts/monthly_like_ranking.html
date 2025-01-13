@@ -1,9 +1,21 @@
-<h1>月のいいねランキング</h1>
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}月のいいねランキング{% endblock %}
+
+{% block content %}
 <ol>
     {% for profile in profiles %}
         <li>
-            <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
+            {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
+            {% else %}
+                <img src="portfolio/media/profile_images/default_profile_image.png" alt="Default Profile Image" width="50">
+            {% endif %}
             <strong>{{ profile.user.name }}</strong> - 👍 {{ profile.total_likes }}
         </li>
     {% endfor %}
 </ol>
+
+{% endblock %}

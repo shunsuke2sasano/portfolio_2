@@ -17,7 +17,7 @@ urlpatterns = [
     path('toggle_status/<int:pk>/', views.toggle_status, name='toggle_status'),  # ステータス切り替え
     path('general_accounts/', views.general_account_list, name='general_account_list'), #一般
     path('general_accounts/<int:user_id>/', views.general_account_detail, name='general_account_detail'), #アカウント詳細
-    path('like_toggle/', views.like_toggle, name='like_toggle'), #
+    path('like_toggle/', views.like_toggle, name='like_toggle'), #いいね機能
     path('monthly_ranking/', views.monthly_like_ranking, name='monthly_like_ranking'), #月のいいねランキング
 
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

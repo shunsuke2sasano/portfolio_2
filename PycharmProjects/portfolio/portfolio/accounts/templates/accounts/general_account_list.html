@@ -1,9 +1,20 @@
-<h1>一般アカウント一覧</h1>
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}一般アカウント一覧{% endblock %}
+
+{% block content %}
 <ul>
     {% for profile in profiles %}
         <li>
-            <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
-            <strong>{{ profile.user.name }}</strong> - {{ profile.get_gender_display }}
+            <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'default_profile_image.png' %}{% endif %}" 
+                 alt="Profile Image" width="50">
+            <strong>
+                <a href="{% url 'accounts:general_account_detail' user_id=profile.user.id %}">
+                    {{ profile.user.name }}
+                </a>
+            </strong> - {{ profile.get_gender_display }}
             <button class="like-btn" data-user-id="{{ profile.user.id }}">
                 👍 {{ profile.likes_count }}
             </button>
@@ -17,7 +28,10 @@
             const userId = this.getAttribute('data-user-id');
             fetch("{% url 'accounts:like_toggle' %}", {
                 method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                headers: { 
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
                 body: new URLSearchParams({ 'user_id': userId })
             })
             .then(response => response.json())
@@ -29,3 +43,4 @@
         });
     });
 </script>
+{% endblock %}

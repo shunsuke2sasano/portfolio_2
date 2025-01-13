@@ -7,10 +7,12 @@ from django.contrib import messages
 from .forms import AdminSettingsForm, AccountForm
 from .models import CustomUser
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import GeneralUserProfile, Like
 from django.db.models import Count
 from django.utils.timezone import now
 from datetime import timedelta
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -166,32 +168,38 @@ def general_account_list(request):
     profiles = GeneralUserProfile.objects.all()
     return render(request, 'accounts/general_account_list.html', {'profiles': profiles})
 
-@login_required
 def like_toggle(request):
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
         liked_user = get_object_or_404(GeneralUserProfile, user_id=user_id)
 
-        if Like.objects.filter(user=request.user, liked_user=liked_user.user).exists():
-            Like.objects.filter(user=request.user, liked_user=liked_user.user).delete()
+        # Like のトグル処理
+        like, created = Like.objects.get_or_create(user=request.user, liked_user=liked_user.user)
+        if not created:
+            # Like を削除
+            like.delete()
             liked_user.likes_count -= 1
-            liked_user.save()
-            return JsonResponse({'success': True, 'liked': False, 'likes_count': liked_user.likes_count})
         else:
-            Like.objects.create(user=request.user, liked_user=liked_user.user)
+            # 新しく Like を追加
             liked_user.likes_count += 1
-            liked_user.save()
-            return JsonResponse({'success': True, 'liked': True, 'likes_count': liked_user.likes_count})
 
-    return JsonResponse({'success': False, 'message': 'Invalid request'})
+        # Like 数を保存
+        liked_user.save()
+
+        return JsonResponse({'success': True, 'likes_count': liked_user.likes_count})
+    
+    # POST メソッドでない場合はエラーを返す
+    return JsonResponse({'success': False}, status=400)
+
 
 @login_required
 def monthly_like_ranking(request):
     current_month = now().month
     profiles = GeneralUserProfile.objects.filter(
-        user__like__created_at__month=current_month
+        Q(user__like__created_at__month=current_month)
     ).annotate(total_likes=Count('user__like')).order_by('-total_likes')[:10]
 
+    print(profiles.query)
     return render(request, 'accounts/monthly_like_ranking.html', {'profiles': profiles})
 
 def general_account_detail(request, user_id):
