@@ -20,5 +20,7 @@ urlpatterns = [
     path('like_toggle/', views.like_toggle, name='like_toggle'), #いいね機能
     path('monthly_ranking/', views.monthly_like_ranking, name='monthly_like_ranking'), #月のいいねランキング
 
-] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

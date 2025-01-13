@@ -169,27 +169,36 @@ def general_account_list(request):
     return render(request, 'accounts/general_account_list.html', {'profiles': profiles})
 
 def like_toggle(request):
-    if request.method == 'POST':
+    try:
+        if request.method != 'POST':
+            return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+        # POSTデータの取得
         user_id = request.POST.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'User ID is required'}, status=400)
+
+        # GeneralUserProfile の取得
         liked_user = get_object_or_404(GeneralUserProfile, user_id=user_id)
 
         # Like のトグル処理
         like, created = Like.objects.get_or_create(user=request.user, liked_user=liked_user.user)
-        if not created:
-            # Like を削除
+        if created:
+            liked_user.likes_count += 1
+        else:
             like.delete()
             liked_user.likes_count -= 1
-        else:
-            # 新しく Like を追加
-            liked_user.likes_count += 1
 
-        # Like 数を保存
         liked_user.save()
 
+        # 成功レスポンス
         return JsonResponse({'success': True, 'likes_count': liked_user.likes_count})
-    
-    # POST メソッドでない場合はエラーを返す
-    return JsonResponse({'success': False}, status=400)
+    except Exception as e:
+        # エラーが発生した場合のログとレスポンス
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error in like_toggle: {e}")
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 
 @login_required

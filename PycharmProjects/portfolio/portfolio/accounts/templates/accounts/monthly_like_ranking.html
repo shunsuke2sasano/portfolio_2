@@ -8,14 +8,21 @@
 <ol>
     {% for profile in profiles %}
         <li>
-            {% if profile.profile_image %}
-                <img src="{{ profile.profile_image.url }}" alt="Profile Image" width="50">
-            {% else %}
-                <img src="portfolio/media/profile_images/default_profile_image.png" alt="Default Profile Image" width="50">
-            {% endif %}
-            <strong>{{ profile.user.name }}</strong> - 👍 {{ profile.total_likes }}
+            <img src="{{ profile.profile_image.url|default_if_none:'/media/profile_images/default_profile_image.jpg' }}" 
+                 alt="Profile Image" width="100">
+            <strong>{{ profile.user.name }}</strong> - 👍 
+            <button class="like-btn" data-user-id="{{ profile.user.id }}">
+                {{ profile.total_likes }}
+            </button>
         </li>
     {% endfor %}
 </ol>
 
+<!-- Like機能用のスクリプト -->
+<script>
+    const likeToggleUrl = "{% url 'accounts:like_toggle' %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'accounts/like_toggle.js' %}"></script>
 {% endblock %}
+
