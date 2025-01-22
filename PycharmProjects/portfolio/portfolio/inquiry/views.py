@@ -72,7 +72,9 @@ def inquiry_create(request):
     if request.method == "POST":
         form = InquiryCreateForm(request.POST)
         if form.is_valid():
-            inquiry = form.save()
+            inquiry = form.save(commit=False)
+            inquiry.status = 'pending'  
+            inquiry.save()
 
             # メール送信
             send_mail(
