@@ -67,7 +67,7 @@ def admin_settings(request):
 @login_required
 @user_passes_test(admin_check)
 def account_list(request):
-    accounts = User.objects.all(is_deleted=False)
+    accounts = User.objects.filter(is_deleted=False)
     paginator = Paginator(accounts, 5)  # 1ページあたり5件
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -204,11 +204,12 @@ def like_toggle(request):
 @login_required
 def monthly_like_ranking(request):
     current_month = now().month
-    profiles = GeneralUserProfile.objects.filter(
-        Q(user__like__created_at__month=current_month)
-    ).annotate(total_likes=Count('user__like')).order_by('-total_likes')[:10]
 
-    print(profiles.query)
+    # 修正後のクエリ
+    profiles = GeneralUserProfile.objects.filter(
+        user__liked_user__created_at__month=current_month
+    ).annotate(total_likes=Count('user__liked_user')).order_by('-total_likes')[:10]
+
     return render(request, 'accounts/monthly_like_ranking.html', {'profiles': profiles})
 
 def general_account_detail(request, user_id):
