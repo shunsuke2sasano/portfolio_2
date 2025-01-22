@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Inquiry, Category
-from .forms import InquiryForm, CategoryForm
+from .forms import InquiryForm, CategoryForm, InquiryCreateForm
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 # お問い合わせ一覧
 def inquiry_list(request):
@@ -65,3 +67,24 @@ def category_delete(request, id):
     
     return render(request, 'inquiry/category_list.html', {'category': category})
 
+#お問合せ作成
+def inquiry_create(request):
+    if request.method == "POST":
+        form = InquiryCreateForm(request.POST)
+        if form.is_valid():
+            inquiry = form.save()
+
+            # メール送信
+            send_mail(
+                subject=f"新しいお問い合わせ: {inquiry.category.name}",
+                message=f"カテゴリ: {inquiry.category.name}\n本文: {inquiry.body}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.ADMIN_EMAIL],
+            )
+
+            messages.success(request, "お問い合わせが送信されました。")
+            return redirect('inquiry:inquiry_list')  # 投稿後のリダイレクト先
+    else:
+        form = InquiryCreateForm()
+
+    return render(request, 'inquiry/inquiry_create.html', {'form': form})
