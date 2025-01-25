@@ -150,10 +150,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 
 # settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.google.com'  # SMTPサーバーのホスト名
-EMAIL_PORT = 587  # SMTPサーバーのポート番号（通常587）
+EMAIL_HOST = 'smtp.office365.com'  # SMTPサーバーのホスト名
+EMAIL_PORT = 587 # SMTPサーバーのポート番号
 EMAIL_USE_TLS = True  # TLSを使用する場合はTrue
-EMAIL_HOST_USER = 'potoforiosongfuxian@gmail.com'  # 送信元のメールアドレス
-EMAIL_HOST_PASSWORD = 'inquiry_create(request)4'  # メールアカウントのパスワード
-DEFAULT_FROM_EMAIL = 'potoforiosongfuxian@gmail.com'   # メールのデフォルト送信元
-NOTIFY_EMAILS = ['s_week_night@yahoo.co.jp']  # 通知を送信するメールアドレス
+EMAIL_HOST_USER = 's.sasano@oplan.co.jp'  # Outlookの情報
+EMAIL_HOST_PASSWORD = 'Sasano#####' # メールアカウントのパスワード
+DEFAULT_FROM_EMAIL = 's.sasano@oplan.co.jp'   # メールのデフォルト送信元
+NOTIFY_EMAILS = ['potoforiosongfuxian@gmail.com']  # 通知を送信するメールアドレス
+ADMIN_EMAIL = 's.sasano@oplan.co.jp'
+EMAIL_TIMEOUT = 10 

@@ -63,7 +63,7 @@ def category_delete(request, id):
     if request.method == 'POST':
         category.delete()
         messages.success(request, "カテゴリーが削除されました。")
-        return redirect('inquiry:category_list')
+        return redirect('/inquiry/')
     
     return render(request, 'inquiry/category_list.html', {'category': category})
 
