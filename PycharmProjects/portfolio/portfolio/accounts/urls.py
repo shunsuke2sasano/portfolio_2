@@ -1,12 +1,14 @@
 from django.urls import path
 from . import views
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
 app_name = 'accounts'
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),              # ログイン画面
+    path('logout/', views.custom_logout_view, name='logout'),
     path('admin/settings/', views.admin_settings, name='admin_settings'),  # 管理者設定画面
     path('account_list/', views.account_list, name='account_list'),  # アカウント一覧
     path('account_create/', views.account_create, name='account_create'),  # アカウント作成

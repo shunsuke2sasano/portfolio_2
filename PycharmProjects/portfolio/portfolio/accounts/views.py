@@ -13,6 +13,7 @@ from django.db.models import Count
 from django.utils.timezone import now
 from datetime import timedelta
 from django.db.models import Q
+from django.contrib.auth import logout
 
 User = get_user_model()
 
@@ -215,3 +216,7 @@ def monthly_like_ranking(request):
 def general_account_detail(request, user_id):
     profile = get_object_or_404(GeneralUserProfile, user_id=user_id)
     return render(request, 'accounts/general_account_detail.html', {'profile': profile})
+
+def custom_logout_view(request):
+    logout(request)
+    return redirect('http://localhost:8000/accounts/login/') 

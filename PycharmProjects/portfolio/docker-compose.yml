@@ -3,10 +3,10 @@ services:
     image: mysql:8.0
     container_name: portfolio_db
     environment:
-      MYSQL_ROOT_PASSWORD: Bullshit03Sasano19  # MySQL root パスワード
-      MYSQL_DATABASE: portfolio_db  # データベース名
+      MYSQL_ROOT_PASSWORD: Bullshit03Sasano19
+      MYSQL_DATABASE: portfolio_db
     ports:
-      - "3307:3306"  # MySQL ポートをホストに公開
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
 
@@ -14,16 +14,25 @@ services:
     build:
       context: .
     container_name: portfolio_web
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python wait_for_db.py &&
+      python manage.py runserver 0.0.0.0:8000"
     volumes:
-      -  ./portfolio:/app/portfolio
+      - ./portfolio:/app/portfolio
+      - ./wait_for_db.py:/app/wait_for_db.py
     ports:
-      - "8000:8000"  # Django のポートをホストに公開
+      - "8000:8000"
     depends_on:
       - db
     environment:
       DJANGO_SETTINGS_MODULE: "portfolio.portfolio.settings"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: portfolio_db
+      DB_USER: root
+      DB_PASSWORD: Bullshit03Sasano19
 
 volumes:
   db_data: {}
+
 

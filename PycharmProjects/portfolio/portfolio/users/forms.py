@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
 import re
+from django.contrib.auth.models import User
 
 class EmailUpdateForm(forms.Form):
     email = forms.EmailField(
@@ -94,3 +95,13 @@ class UserProfileEditForm(forms.ModelForm):
         cleaned_data = super().clean()
         # 必要に応じて追加のカスタム検証ロジックを記述
         return cleaned_data
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+class UserSettingsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email']

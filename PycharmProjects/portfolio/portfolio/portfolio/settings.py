@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'portfolio.inquiry',
     'portfolio.users',
-]
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +62,8 @@ ROOT_URLCONF = 'portfolio.portfolio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ 
+            os.path.join(BASE_DIR, 'dashboard/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,3 +160,5 @@ DEFAULT_FROM_EMAIL = 's.sasano@oplan.co.jp'   # メールのデフォルト送�
 NOTIFY_EMAILS = ['potoforiosongfuxian@gmail.com']  # 通知を送信するメールアドレス
 ADMIN_EMAIL = 's.sasano@oplan.co.jp'
 EMAIL_TIMEOUT = 10 
+
+LOGOUT_REDIRECT_URL = 'http://localhost:8000/accounts/login/'
